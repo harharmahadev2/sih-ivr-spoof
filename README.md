@@ -1,20 +1,42 @@
 # SPOOFex
-Problem statement: "System for Identification of system generated, blank & Spoof calls landing at Dial 100 Police control room"
-1. It's a app.py file of python backed flask framework, Twilio Client API is called to fetch client details and recieve calls on a US based trial number offered by Twilio. Since the call is recieved only on a public host & 
-the flask app runs on a local host 5000, so we leverage ngrok, cross-platform apllication which exposes a local development server to the internet and divert the traffic, i.e incoming calls recieved onto it. 
-2. Once the user calls on the given number, initially before the call is connected the number is verified whether it's a legit Indian number or not, we used Regular expression library of python for this and 
-then "the spam_lookup" function lookups into the live spam database to check if that number is in spamlist, if found the IVRS disconnects the call rightaway.
-3. As soon as the call is connected, Twilio makes a websocket connection to this endpoint, the user is asked by the IVRS to speak about their problem in about 20 seconds. The while loop is used to read each message and decode it to a python dictionary.
-4. A python library known as audioop is used to decode the twilio's foreign mu-law formated encoded data to a 16 bit uncompressed format. Finally the audio from twilio's sample rate is converted to of the requirements of vosk speech recognition engine, now the audio data is recieved by the vosk engine for generating transcript. 
-5. If the transcript generated has 0 length that means it's a blank call, so that call is disconnected there itself.
-6. This transcript is then fed to different models such as Multinomial Naive bayes classifier and after some sentiment analysis the call is classified into different categories such as Spam call, Emergency call, Inquiry related or Complaint. 
-7. Simultaneously, the user is asked to enter a single digit input such as 1 for Emergency, 2 for Inquiry and 3 for Complaint. So after mapping both the results i.e user input and model prediction,  a final output is given and the call is routed to the respective department and if found spam, the police can add the number into the spamlist.
-8. All the data such as, phone number, transcript, user input, time and model prediction are stored into the live database (PostgreSQL). 
-9. So on the front webpage, model prediction, user input, department to which the call is forwaded to and the phone number are displayed with extra features such as instructions for the operator and add to spam button.
+Project Description: System for Identification of System-Generated, Blank & Spoof Calls Landing at Dial 100 Police Control Room
+
+Introduction:
+The "System for Identification of System-Generated, Blank & Spoof Calls Landing at Dial 100 Police Control Room" is a Python-based Flask application designed to address the issue of identifying and classifying incoming calls received at the Dial 100 Police Control Room. The application leverages the Twilio Client API to fetch client details and receive calls on a US-based trial number offered by Twilio. To make the application accessible, ngrok, a cross-platform application, is used to expose the local development server to the internet and divert incoming call traffic to it.
+
+Functionality Overview:
+
+Call Verification: Before a call is connected, the system verifies if the caller's number is a legitimate Indian number using regular expressions. Additionally, the system checks if the number is listed in the live spam database using the "spam_lookup" function. If the number is found in the spamlist, the IVRS disconnects the call immediately.
+
+Call Recording and Transcription: Once the call is connected, Twilio establishes a WebSocket connection to the application's endpoint. The Interactive Voice Response System (IVRS) prompts the caller to speak about their problem within a time limit of approximately 20 seconds. The application uses a while loop to read and decode each message received from Twilio into a Python dictionary. The audio data received from Twilio, encoded in a foreign mu-law format, is decoded using the "audioop" library into a 16-bit uncompressed format. The audio is then converted to the required format for the vosk speech recognition engine to generate a transcript.
+
+Blank Call Detection: If the generated transcript has zero length, indicating no spoken content, the system identifies the call as a blank call and disconnects it.
+
+Call Classification: The generated transcript is further processed by different models, such as the Multinomial Naive Bayes classifier, and subjected to sentiment analysis. Based on the results, the call is classified into various categories, including Spam Call, Emergency Call, Inquiry Related, or Complaint.
+
+User Input and Routing: Simultaneously, the caller is asked to enter a single-digit input to indicate the nature of their call, such as 1 for Emergency, 2 for Inquiry, and 3 for Complaint. The application maps the user's input with the model's prediction, and based on the final result, routes the call to the respective department. If a call is identified as spam, the system allows the police to add the number to the spamlist.
+
+Database Storage: All relevant call data, including phone number, transcript, user input, time, and model prediction, is stored in a live PostgreSQL database.
+
+Web Interface:
+The front webpage of the application displays key information, such as the model's prediction, user input, the department to which the call is forwarded, and the phone number. The interface also provides additional features, including instructions for the operator and an "Add to Spam" button.
+
+Installation and Deployment:
+To deploy the application, follow these steps:
+
+Install the required dependencies listed in the project's requirements.txt file.
+Configure the Twilio Client API and obtain a US-based trial number.
+Set up ngrok to expose the local development server to the internet.
+Deploy the Flask application using a suitable web server (e.g., gunicorn).
+Set up a PostgreSQL database and configure the application to connect to it.
+Update the application's configuration files with the necessary credentials and settings.
+Run the application and verify its functionality.
 
 # Flowchart
 ![3](https://user-images.githubusercontent.com/87855947/188958305-472ffee6-c25a-4936-b052-ba9e32316b15.jpg)
 
 # Technologies Used
 ![4](https://user-images.githubusercontent.com/87855947/188959322-e69e07d8-1e05-4f42-9ad1-f59de58c7925.jpg)
+
+
 
